@@ -2,13 +2,16 @@
 
 namespace PhpUnitResultPrinter;
 
+use PHPUnit_Framework_Test;
+use PHPUnit_Framework_TestCase;
+use PHPUnit_Framework_TestResult;
+use PHPUnit_Framework_TestSuite;
 use PHPUnit_TextUI_ResultPrinter;
+use PHP_CodeCoverage_Util;
+use PHP_Timer;
 
 class ResultPrinter extends PHPUnit_TextUI_ResultPrinter
 {
-    /**
-     * @param PHPUnit_Framework_TestResult $result
-     */
     public function printResult(PHPUnit_Framework_TestResult $result)
     {
         parent::printResult($result);
@@ -42,9 +45,6 @@ class ResultPrinter extends PHPUnit_TextUI_ResultPrinter
         $this->write($header);
     }
 
-    /**
-     * @param PHPUnit_Framework_TestResult $result
-     */
     protected function printFooter(PHPUnit_Framework_TestResult $result)
     {
         $tests = count($result);
@@ -90,13 +90,6 @@ class ResultPrinter extends PHPUnit_TextUI_ResultPrinter
         }
     }
 
-    /**
-     * A testsuite started.
-     *
-     * @param PHPUnit_Framework_TestSuite $suite
-     *
-     * @since  Method available since Release 2.2.0
-     */
     public function startTestSuite(PHPUnit_Framework_TestSuite $suite)
     {
         if ($this->numTests == -1) {
@@ -104,12 +97,6 @@ class ResultPrinter extends PHPUnit_TextUI_ResultPrinter
         }
     }
 
-    /**
-     * A test ended.
-     *
-     * @param PHPUnit_Framework_Test $test
-     * @param float                  $time
-     */
     public function endTest(PHPUnit_Framework_Test $test, $time)
     {
         if (!$this->lastTestFailed) {
