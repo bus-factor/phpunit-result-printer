@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpUnitResultPrinter;
+namespace PhpunitResultPrinter;
 
 use PHPUnit_Framework_Test;
 use PHPUnit_Framework_TestCase;

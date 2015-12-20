@@ -11,6 +11,6 @@ Add the following in your ```phpunit.xml```:
 ```
 <phpunit
     printerFile="./vendor/bus-factor/phpunit-result-printer/src/ResultPrinter.php"
-    printerClass="PhpUnitResultPrinter\ResultPrinter"
+    printerClass="PhpunitResultPrinter\ResultPrinter"
     >
 ```
