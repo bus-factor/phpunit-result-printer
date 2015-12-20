@@ -1,0 +1,21 @@
+{
+    "name": "bus-factor/phpunit-result-printer",
+    "description": "Alternative result printer for PHPUnit.",
+    "type": "library",
+    "license": "MIT",
+    "homepage": "https://github.com/bus-factor/phpunit-result-printer/",
+    "authors": [
+        {
+            "name": "Michael Leßnau",
+            "email": "michael.lessnau@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "PhpUnitResultPrinter\\": "src/"
+        }
+    },
+    "require": {
+        "phpunit/phpunit": ">4.8"
+    }
+}
