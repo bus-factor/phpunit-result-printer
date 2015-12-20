@@ -7,6 +7,7 @@ use PHPUnit_Framework_TestCase;
 use PHPUnit_Framework_TestResult;
 use PHPUnit_Framework_TestSuite;
 use PHPUnit_TextUI_ResultPrinter;
+use PHP_CodeCoverage_Report_Node_File;
 use PHP_CodeCoverage_Util;
 use PHP_Timer;
 
@@ -29,8 +30,71 @@ class ResultPrinter extends PHPUnit_TextUI_ResultPrinter
 
         if ($coverage >= 100) {
             $this->writeWithColor('fg-white', $text);
-        } else {
-            $this->writeWithColor('fg-white, bold, bg-red', $text);
+            return;
+        }
+
+        $this->writeWithColor('fg-white, bold, bg-red', $text);
+
+        $classCoverage = [];
+
+        foreach ($report as $item) {
+            if (!$item instanceof PHP_CodeCoverage_Report_Node_File) {
+                continue;
+            }
+
+            $classes  = $item->getClassesAndTraits();
+
+            foreach ($classes as $className => $class) {
+                $lines = 0;
+                $linesCovered = 0;
+
+                foreach ($class['methods'] as $method) {
+                    if ($method['executableLines'] == 0) {
+                        continue;
+                    }
+
+                    $lines += $method['executableLines'];
+                    $linesCovered += $method['executedLines'];
+                }
+
+                if ($lines <= $linesCovered) {
+                    continue;
+                }
+
+                if (!empty($class['package']['namespace'])) {
+                    $namespace = $class['package']['namespace'] . '\\';
+                } elseif (!empty($class['package']['fullPackage'])) {
+                    $namespace = '@' . $class['package']['fullPackage'] . '\\';
+                } else {
+                    $namespace = '';
+                }
+
+                $classCoverage[$namespace . $className] = [
+                    'className ' => $className,
+                    'lines' => $lines,
+                    'linesCovered' => $linesCovered,
+                    'namespace' => $namespace,
+                ];
+            }
+        }
+
+        ksort($classCoverage);
+
+        if (count($classCoverage) > 0) {
+            $this->write("\n");
+        }
+
+        $linesMax = max(array_map(function ($a) { return strlen($a['lines']); }, $classCoverage));
+        $linesCoveredMax = max(array_map(function ($a) { return strlen($a['linesCovered']); }, $classCoverage));
+
+        foreach ($classCoverage as $fullQualifiedPath => $classInfo) {
+            $this->write(sprintf(
+                "  %5.2f  %{$linesCoveredMax}d/%{$linesMax}d  %s\n",
+                PHP_CodeCoverage_Util::percent($classInfo['linesCovered'], $classInfo['lines']),
+                $classInfo['linesCovered'],
+                $classInfo['lines'],
+                $fullQualifiedPath
+            ));
         }
     }
 
