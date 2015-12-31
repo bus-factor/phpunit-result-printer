@@ -33,7 +33,11 @@ class ResultPrinter extends PHPUnit_TextUI_ResultPrinter
             return;
         }
 
-        $this->writeWithColor('fg-white, bold, bg-red', $text);
+        if ($coverage >= 50) {
+            $this->writeWithColor('fg-white, bold, bg-yellow', $text);
+        } else {
+            $this->writeWithColor('fg-white, bold, bg-red', $text);
+        }
 
         $classCoverage = [];
 
